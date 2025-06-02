@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>imcrypt-main Web App</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f8f9fa;
+    }
+    .container {
+      max-width: 600px;
+      margin: 40px auto;
+      background: #fff;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    textarea {
+      width: 100%;
+      height: 80px;
+    }
+    img {
+      max-width: 100%;
+      border: 1px solid #ccc;
+      padding: 8px;
+      border-radius: 4px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Welcome to imcrypt-main Web App</h1>
+    <div style="text-align:center; margin-bottom: 1em;">
+      <b>Developed by Pratik Sharma</b>
+    </div>
+    <form id="encrypt-form">
+      <label for="image-upload">Select an image to encrypt:</label><br><br>
+      <input type="file" id="image-upload" name="image-upload" accept="image/*"><br><br>
+      <button type="submit">Encrypt Image</button>
+    </form>
+    <div id="encrypt-result"></div>
+    <hr>
+    <form id="decrypt-form">
+      <label for="encrypted-image-upload">Select an image to decrypt:</label><br><br>
+      <input type="file" id="encrypted-image-upload" name="encrypted-image-upload" accept="image/*"><br><br>
+      <label for="key-input">Paste key:</label><br>
+      <textarea id="key-input" name="key-input"></textarea><br><br>
+      <button type="submit">Decrypt Image</button>
+    </form>
+    <div id="decrypt-result"></div>
+  </div>
+  <script>
+    // Encrypt handler
+    document.getElementById('encrypt-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const fileInput = document.getElementById('image-upload');
+      const resultDiv = document.getElementById('encrypt-result');
+      resultDiv.innerHTML = '';
+      if (fileInput.files && fileInput.files[0]) {
+        const formData = new FormData();
+        formData.append('image', fileInput.files[0]);
+        try {
+          const response = await fetch('/encrypt', {
+            method: 'POST',
+            body: formData
+          });
+          if (!response.ok) {
+            const err = await response.json();
+            resultDiv.innerHTML = `<p style="color:red;">${err.error || 'Encryption failed.'}</p>`;
+            return;
+          }
+          const data = await response.json();
+
+          // Download the encrypted image
+          const link = document.createElement('a');
+          link.href = 'data:image/png;base64,' + data.encryptedImage;
+          // Use original filename + _encrypted.png
+          const originalName = fileInput.files[0].name.replace(/\.[^/.]+$/, "");
+          link.download = originalName + '_encrypted.png';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+
+          resultDiv.innerHTML = `
+            <p><strong>Encrypted image downloaded!</strong></p>
+            <p><strong>Key:</strong></p>
+            <textarea readonly>${data.key}</textarea>
+            <p style="color:green;">Image encrypted and downloaded successfully.</p>
+          `;
+        } catch (err) {
+          resultDiv.innerHTML = `<p style="color:red;">${err.message || 'Encryption failed.'}</p>`;
+        }
+      } else {
+        resultDiv.innerHTML = '<p style="color:red;">Please select an image file.</p>';
+      }
+    });
+
+    // Decrypt handler
+    document.getElementById('decrypt-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const fileInput = document.getElementById('encrypted-image-upload');
+      const keyInput = document.getElementById('key-input');
+      const resultDiv = document.getElementById('decrypt-result');
+      resultDiv.innerHTML = '';
+      if (fileInput.files && fileInput.files[0] && keyInput.value.trim()) {
+        const formData = new FormData();
+        formData.append('image', fileInput.files[0]);
+        formData.append('key', keyInput.value.trim());
+        try {
+          const response = await fetch('/decrypt', {
+            method: 'POST',
+            body: formData
+          });
+          if (!response.ok) {
+            const err = await response.json();
+            resultDiv.innerHTML = `<p style="color:red;">${err.error || 'Decryption failed.'}</p>`;
+            return;
+          }
+          const data = await response.json();
+          resultDiv.innerHTML = `
+            <p><strong>Decrypted image:</strong></p>
+            <img src="data:image/png;base64,${data.decryptedImage}" alt="Decrypted Image"/>
+            <p style="color:green;">Image decrypted successfully.</p>
+          `;
+        } catch (err) {
+          resultDiv.innerHTML = `<p style="color:red;">${err.message || 'Decryption failed.'}</p>`;
+        }
+      } else {
+        resultDiv.innerHTML = '<p style="color:red;">Please select an image file and paste the key.</p>';
+      }
+    });
+  </script>
+</body>
+</html>
