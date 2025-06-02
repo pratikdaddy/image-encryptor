@@ -2,8 +2,8 @@ const express = require('express');
 const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
-const encrypt = require('./utils/encrypt');
-const decrypt = require('./utils/decrypt');
+const encrypt = require('./encrypt');
+const decrypt = require('./decrypt');
 const cors = require('cors');
 const app = express();
 const PORT = 3000;
@@ -129,6 +129,11 @@ app.post('/decrypt', upload.fields([
         res.status(500).json({ error: err.message || 'Decryption failed' });
     }
 });
+
+const uploadsDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir);
+}
 
 app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`);
