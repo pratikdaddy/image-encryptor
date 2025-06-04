@@ -63,20 +63,16 @@ const encrypt = async flags => {
 		const spinner = ora(`Reading Image...`).start();
 
 		const image = await jimp.read(filePath);
+		let extension = image.getExtension();
 
-		const extension = image.getExtension();
-
-		// ask question to proceed if the image is a jpeg/jpg
-		if (extension === `jpeg` || extension === `jpg`) {
-			spinner.stop();
-			const proceed = await askQuestion(
-				`The image you are trying to encrypt is a jpeg/jpg. Some information may be lost while encryption/decryption. Do you want to proceed? (y/n) \n`
-			);
-
-			if (proceed !== `y`) {
-				process.exit(0);
+		if (extension === 'jpeg' || extension === 'jpg') {
+			console.warn('Warning: JPEG is a lossy format. Converting to PNG for better encryption.');
+			// Convert to PNG in memory
+			extension = 'png';
+			// Update output file name to .png
+			if (flags.outputImageFileName) {
+				flags.outputImageFileName = flags.outputImageFileName.replace(/\.[^/.]+$/, ".png");
 			}
-			spinner.start();
 		}
 
 		spinner.succeed(`Image read successfully`);
