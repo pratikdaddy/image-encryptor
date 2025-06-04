@@ -13,6 +13,12 @@ A web-based tool to encrypt and decrypt images using a custom XOR-based algorith
 - No image or key is stored on the server after processing.
 
 ---
+![image](https://github.com/user-attachments/assets/8112a0db-064c-4223-a525-7dd060cf3660)
+![image](https://github.com/user-attachments/assets/6f87627e-f9af-4e6b-8a3a-19a8f2daba0e)
+![image](https://github.com/user-attachments/assets/516c4b4a-1c53-4ce0-a0f5-1710e2f21585)
+
+
+
 
 ## Getting Started
 
