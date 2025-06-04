@@ -43,14 +43,14 @@
     </div>
     <form id="encrypt-form">
       <label for="image-upload">Select an image to encrypt:</label><br><br>
-      <input type="file" id="image-upload" name="image-upload" accept="image/*"><br><br>
+      <input type="file" id="image-upload" name="image-upload" accept="image/png, image/jpeg, .png, .jpg, .jpeg"><br><br>
       <button type="submit">Encrypt Image</button>
     </form>
     <div id="encrypt-result"></div>
     <hr>
     <form id="decrypt-form">
       <label for="encrypted-image-upload">Select an image to decrypt:</label><br><br>
-      <input type="file" id="encrypted-image-upload" name="encrypted-image-upload" accept="image/*"><br><br>
+      <input type="file" id="encrypted-image-upload" name="encrypted-image-upload" accept="image/png, image/jpeg, .png, .jpg, .jpeg"><br><br>
       <label for="key-input">Paste key:</label><br>
       <textarea id="key-input" name="key-input"></textarea><br><br>
       <button type="submit">Decrypt Image</button>
