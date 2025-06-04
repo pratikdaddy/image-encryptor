@@ -16,12 +16,9 @@ A web-based tool to encrypt and decrypt images using a custom XOR-based algorith
 
 ## Getting Started
 
-### 1. Clone the repository
+### 1. Open the folder image encryptor main in VS CODE :
 
-```sh
-git clone https://github.com/yourusername/imcrypt-main.git
-cd imcrypt-main
-```
+Make sure all the files are present there that has been provided
 
 ### 2. Install dependencies
 
